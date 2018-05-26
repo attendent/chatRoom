@@ -51,4 +51,12 @@ public interface UserService {
 	public boolean update(String userName, String nextPassword);
 	
 	public String changeNickName(Integer userId,String nextNickName);
+	
+	public List<User> getApplicants(Integer userId);
+	
+	// 同意好友申请
+	public String agreedFriend(Integer userId,Integer applicantId);
+	
+	// 拒绝好友申请
+	public String refuseFriend(Integer userId,Integer applicantId);
 }

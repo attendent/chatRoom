@@ -46,7 +46,7 @@ public class AddFriend extends HttpServlet {
 			friend = userservice.find(friendName);
 			List<User> friends = new ArrayList<>();
 			msg = userservice.addFriend(user.getId(), friend.getId());
-			if (msg.equals("添加好友成功")) {
+			if (msg.equals("申请好友成功")) {
 				// 更新主页好友列表
 				friends = userservice.getFriends(user.getId());
 				request.getSession().setAttribute("friends", friends);

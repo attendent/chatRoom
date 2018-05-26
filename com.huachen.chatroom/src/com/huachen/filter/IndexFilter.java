@@ -34,7 +34,6 @@ public class IndexFilter implements Filter{
 		
 		User user = (User) request.getSession().getAttribute("user");
 		
-		//Integer userId = (Integer) request.getSession().getAttribute("userId");
 		Integer roomId = 1;
 		String roomName = "聊天总群";
 		if (user == null) {
@@ -57,18 +56,21 @@ public class IndexFilter implements Filter{
 		List<User> friends = new ArrayList<>();
 		List<ChatRoom> chatRooms = new ArrayList<>();
 		List<File> files = new ArrayList<>();
-
+		List<User> applicants = new ArrayList<>();
+		
 		// 得到该用户的所有,好友，聊天室
 		friends = userservice.getFriends(user.getId());
 		chatRooms = userservice.getChatRooms(user.getId());
 		userlist = chatservice.getAllUsers(roomId);
 		files = chatservice.getAllFiles(chatRoom.getId());
+		applicants = userservice.getApplicants(user.getId());
 		
 		request.getSession().setAttribute("friends", friends);
 		request.getSession().setAttribute("chatRooms", chatRooms);
 		request.getSession().setAttribute("chatRoom",chatRoom);
 		request.getSession().setAttribute("userlist",userlist);
 		request.getSession().setAttribute("files", files);
+		request.getSession().setAttribute("applicants", applicants);
 		chain.doFilter(arg0, arg1);
 	}
 

@@ -55,7 +55,20 @@ public interface UserDao {
 
 	// 得到用户邮箱
 	public String selectMail(String userName);
-	
+
+	// 修改昵称
 	public boolean changeNickName(Integer userId, String nextNickName);
 
+	// 得到用户申请列表
+	public List<User> getApplicants(Integer userId);
+	
+	// 同意好友申请
+	public boolean agreedFriend(Integer userId,Integer applicantId);
+	
+	// 拒绝好友申请
+	public boolean refuseFriend(Integer userId,Integer applicantId);
+
+	// 判断是否已申请该用户为好友
+	public boolean isApplicant(Integer userId,Integer applicantId);
+	
 }

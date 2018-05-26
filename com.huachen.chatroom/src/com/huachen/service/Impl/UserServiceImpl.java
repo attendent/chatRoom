@@ -86,10 +86,14 @@ public class UserServiceImpl implements UserService {
 		if (!userId.equals(friendId)) {
 			if (friendId != null) {
 				if (userdao.isFriend(userId, friendId) == false) {
-					if (userdao.addFriend(userId, friendId) == true) {
-						return "添加好友成功";
-					} else {
-						return "添加好友失败";
+					if(userdao.isApplicant(userId,friendId) == false) {
+						if (userdao.addFriend(userId, friendId) == true) {
+							return "申请好友成功";
+						} else {
+							return "申请好友失败";
+						}
+					}else {
+						return "正在申请好友";
 					}
 				} else {
 					return "该用户已经是好友了";
@@ -114,7 +118,7 @@ public class UserServiceImpl implements UserService {
 	public String delFriend(Integer userId, Integer friendId) {
 		if (userId != null) {
 			if (friendId != null) {
-				if (userId.equals(friendId)) {
+				if (!userId.equals(friendId)) {
 					if (userdao.isFriend(userId, friendId) == true) {
 						if (userdao.delFriend(userId, friendId) == true) {
 							return "删除好友成功";
@@ -207,5 +211,30 @@ public class UserServiceImpl implements UserService {
 			return "用户昵称不能为空";
 		}
 	}
+
+	@Override
+	public List<User> getApplicants(Integer userId) {
+		return userdao.getApplicants(userId);
+	}
+
+	@Override
+	public String agreedFriend(Integer userId, Integer applicantId) {
+		if(userdao.agreedFriend(userId,applicantId)==true) {
+			return "成功";
+		}else {
+			return "发生系统错误";
+		}
+	}
+
+	@Override
+	public String refuseFriend(Integer userId, Integer applicantId) {
+		if(userdao.refuseFriend(userId, applicantId)==true) {
+			return "被拒绝";
+		}else {
+			return "发生系统错误";
+		}
+	}
+	
+	
 
 }

@@ -26,8 +26,9 @@ public class SendMail extends HttpServlet implements Servlet {
 			throws ServletException, IOException {
 
 		String action = request.getParameter("action");
-		if(action.equals("")) {
+		if(action == null) {
 			response.sendRedirect("Index.jsp");
+			return ;
 		}
 
 		if (action.equals("ReSet")) {

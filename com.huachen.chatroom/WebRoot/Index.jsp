@@ -209,7 +209,7 @@
 
 <div style="float: right">
 	<div
-		style="height: 250px; width: 280px; overflow: auto; border: 1px; border-style: solid;">
+		style="height: 170px; width: 280px; overflow: auto; border: 1px; border-style: solid;">
 		<h3>聊天室总在线用户</h3>
 		<p>
 			<c:forEach items="${map }" var="entry">
@@ -218,11 +218,29 @@
 		</p>
 	</div>
 	<div
-		style="height: 250px; width: 280px; border: 1px; border-style: solid; overflow: auto">
+		style="height: 170px; width: 280px; border: 1px; border-style: solid; overflow: auto">
 		<h3>本群存储文件</h3>
 		<p>
 			<c:forEach items="${files }" var="file">
 		${file.nickName} 上传了:${file.file }<br>
+			</c:forEach>
+		</p>
+	</div>
+		
+	<div
+		style="height: 170px; width: 280px; overflow: auto; border: 1px; border-style: solid;">
+		<h3>好友申请列表</h3>
+		<p>
+			<c:forEach items="${applicants }" var="applicant">
+		${applicant.nickName}
+		<form action="Judge?action=Yes" method="post">
+			<input type="hidden" name="applicantId" value="${applicant.id }"/>
+			<button type="submit">同意</button>
+		</form>
+		<form action="Judge?action=No" method="post">
+			<input type="hidden" name="applicantId" value="${applicant.id }"/>
+			<button type="submit">拒绝</button>
+		</form>  
 			</c:forEach>
 		</p>
 	</div>

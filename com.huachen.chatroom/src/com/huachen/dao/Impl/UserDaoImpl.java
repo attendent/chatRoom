@@ -198,7 +198,7 @@ public class UserDaoImpl implements UserDao {
 		try {
 			con = JdbcUtils.getCon();
 			String sql = "SELECT user.* FROM user,user_friend uf WHERE uf.userid = '" + userId
-					+ "' AND user.id = uf.friendid";
+					+ "' AND user.id = uf.friendid AND uf.status=1";
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -223,10 +223,11 @@ public class UserDaoImpl implements UserDao {
 		ResultSet rs = null;
 		try {
 			con = JdbcUtils.getCon();
-			String sql = "INSERT INTO user_friend (userid,friendid) VALUES(?,?)";
+			String sql = "INSERT INTO user_friend (userid,friendid,status) VALUES(?,?,?)";
 			ps = (PreparedStatement) con.prepareStatement(sql);
 			ps.setInt(1, userId);
 			ps.setInt(2, friendId);
+			ps.setInt(3, 0);
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -266,7 +267,8 @@ public class UserDaoImpl implements UserDao {
 		ResultSet rs = null;
 		try {
 			con = JdbcUtils.getCon();
-			String sql = "DELETE FROM user_friend WHERE userid = '" + userId + "' AND friendId = '" + friendId + "'";
+			String sql = "DELETE FROM user_friend WHERE (userid = '" + userId + "' AND friendId = '" + friendId
+					+ "') OR (userid = '"+ friendId +"' AND userid = '"+ friendId +"')";
 			ps = (PreparedStatement) con.prepareStatement(sql);
 			ps.executeUpdate();
 			return true;
@@ -285,7 +287,8 @@ public class UserDaoImpl implements UserDao {
 		ResultSet rs = null;
 		try {
 			con = JdbcUtils.getCon();
-			String sql = "SELECT * FROM user_friend WHERE userid = '" + userId + "' ANd friendid = '" + friendId + "'";
+			String sql = "SELECT * FROM user_friend WHERE userid = '" + userId + "' ANd friendid = '" + friendId
+					+ "'AND status = 1";
 			ps = (PreparedStatement) con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			if (rs.next()) {
@@ -403,7 +406,7 @@ public class UserDaoImpl implements UserDao {
 		ResultSet rs = null;
 		try {
 			con = JdbcUtils.getCon();
-			String sql = "select * from user where username = '"+ userName +"'";
+			String sql = "select * from user where username = '" + userName + "'";
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -411,7 +414,7 @@ public class UserDaoImpl implements UserDao {
 				break;
 			}
 		} catch (Exception ex) {
-			return null;
+			ex.printStackTrace();
 		} finally {
 			util.close(ps, con, rs);
 		}
@@ -425,7 +428,7 @@ public class UserDaoImpl implements UserDao {
 		ResultSet rs = null;
 		try {
 			con = JdbcUtils.getCon();
-			String sql = "DELETE FROM user_room WHERE userid = '"+ userId +"' AND roomid = '"+ roomId +"'";
+			String sql = "DELETE FROM user_room WHERE userid = '" + userId + "' AND roomid = '" + roomId + "'";
 			ps = (PreparedStatement) con.prepareStatement(sql);
 			ps.executeUpdate();
 			return true;
@@ -455,4 +458,104 @@ public class UserDaoImpl implements UserDao {
 		}
 		return false;
 	}
+
+	@Override
+	public List<User> getApplicants(Integer userId) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<User> applicants = new ArrayList<>();
+		try {
+			con = JdbcUtils.getCon();
+			String sql = "select * from user,user_friend uf where friendid='" + userId
+					+ "' AND user.id = uf.userid AND uf.status = 0";
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				User user = new User();
+				user.setId(rs.getInt(1));
+				user.setNickName(rs.getString(4));
+				applicants.add(user);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			util.close(ps, con, rs);
+		}
+		return applicants;
+	}
+
+	@Override
+	public boolean agreedFriend(Integer userId, Integer applicantId) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			con = JdbcUtils.getCon();
+			String sql = "UPDATE user_friend SET status = 1 where friendid ='" + userId + "' AND userid = '"
+					+ applicantId + "'";
+			ps = (PreparedStatement) con.prepareStatement(sql);
+			ps.executeUpdate();
+			ps.close();
+
+			sql = "INSERT INTO user_friend(userid,friendid,status) value(?,?,?)";
+			ps = (PreparedStatement) con.prepareStatement(sql);
+			ps.setInt(1, userId);
+			ps.setInt(2, applicantId);
+			ps.setInt(3, 1);
+			ps.executeUpdate();
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			util.close(ps, con, rs);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean refuseFriend(Integer userId, Integer applicantId) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			con = JdbcUtils.getCon();
+			String sql = "DELECE FROM user_friend uf WHERE userid = '" + userId + "' AND applicantId = '" + applicantId
+					+ "'";
+			ps = (PreparedStatement) con.prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			util.close(ps, con, rs);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isApplicant(Integer userId, Integer applicantId) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String sql = "SELECT * FROM user_friend WHERE (userid = '" + userId + "' AND friendid = '" + applicantId
+				+ "' AND status = 0) OR (userid = '" + applicantId + "' AND friendid = '" + userId
+				+ "' AND status = 0)";
+		JdbcUtils util = new JdbcUtils();
+		try {
+			con = JdbcUtils.getCon();
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			util.close(ps, con, rs);
+		}
+		return false;
+	}
+
 }
