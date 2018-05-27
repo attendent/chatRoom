@@ -1,0 +1,17 @@
+INSERT INTO `user_room` VALUES (NULL, 1);
+INSERT INTO `user_room` VALUES (NULL, 1);
+INSERT INTO `user_room` VALUES (3, 1);
+INSERT INTO `user_room` VALUES (4, 1);
+INSERT INTO `user_room` VALUES (5, 1);
+INSERT INTO `user_room` VALUES (6, 1);
+INSERT INTO `user_room` VALUES (7, 1);
+INSERT INTO `user_room` VALUES (NULL, 25);
+INSERT INTO `user_room` VALUES (5, 36);
+INSERT INTO `user_room` VALUES (5, NULL);
+INSERT INTO `user_room` VALUES (5, NULL);
+INSERT INTO `user_room` VALUES (NULL, NULL);
+INSERT INTO `user_room` VALUES (NULL, 67);
+INSERT INTO `user_room` VALUES (5, 67);
+INSERT INTO `user_room` VALUES (NULL, 67);
+INSERT INTO `user_room` VALUES (8, 1);
+INSERT INTO `user_room` VALUES (3, 25);
