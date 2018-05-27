@@ -59,4 +59,8 @@ public interface UserService {
 	
 	// 拒绝好友申请
 	public String refuseFriend(Integer userId,Integer applicantId);
+	
+	public Integer getLastContent(Integer userId);
+
+	public void addContentSign(Integer userId,Integer contentSign);
 }

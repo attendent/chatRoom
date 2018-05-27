@@ -63,7 +63,7 @@ public class SendMail extends HttpServlet implements Servlet {
 			request.getSession().setAttribute("code", code);
 			request.setAttribute("time", System.currentTimeMillis());
 			request.setAttribute("userName", userName);
-			request.getRequestDispatcher("ReSet.jsp").forward(request, response);
+			request.getRequestDispatcher("WEB-INF/ReSet.jsp").forward(request, response);
 			return;
 		} else if (action.equals("ReSetPwd")) {
 			String nextPassword = request.getParameter("nextpassword");
@@ -75,12 +75,12 @@ public class SendMail extends HttpServlet implements Servlet {
 			// 判断验证码
 			if (input_code.equals("")) {
 				request.setAttribute("msg", "检验码不能为空");
-				request.getRequestDispatcher("ReSet.jsp").forward(request, response);
+				request.getRequestDispatcher("WEB-INF/ReSet.jsp").forward(request, response);
 				return;
 			}
 			if (input_code.length() > 5) {
 				request.setAttribute("msg", "检验码长度过长");
-				request.getRequestDispatcher("ReSet.jsp").forward(request, response);
+				request.getRequestDispatcher("WEB-INF/ReSet.jsp").forward(request, response);
 				return;
 			}
 			if (code.equals(Integer.parseInt(input_code))) {
@@ -103,22 +103,22 @@ public class SendMail extends HttpServlet implements Servlet {
 							return;
 						} else {
 							request.setAttribute("msg", "修改密码失败");
-							request.getRequestDispatcher("ReSet.jsp").forward(request, response);
+							request.getRequestDispatcher("WEB-INF/ReSet.jsp").forward(request, response);
 							return;
 						}
 					} else {
 						request.setAttribute("msg", "密码长度错误");
-						request.getRequestDispatcher("ReSet.jsp").forward(request, response);
+						request.getRequestDispatcher("WEB-INF/ReSet.jsp").forward(request, response);
 						return;
 					}
 				} else {
 					request.setAttribute("msg", "密码不能为空");
-					request.getRequestDispatcher("ReSet.jsp").forward(request, response);
+					request.getRequestDispatcher("WEB-INF/ReSet.jsp").forward(request, response);
 					return;
 				}
 			} else {
 				request.setAttribute("msg", "验证码错误");
-				request.getRequestDispatcher("ReSet.jsp").forward(request, response);
+				request.getRequestDispatcher("WEB-INF/ReSet.jsp").forward(request, response);
 				return;
 			}
 		}

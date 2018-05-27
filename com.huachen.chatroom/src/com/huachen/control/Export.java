@@ -15,8 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.huachen.model.ChatContent;
 import com.huachen.model.ChatRoom;
+import com.huachen.model.User;
 import com.huachen.service.ChatService;
+import com.huachen.service.UserService;
 import com.huachen.service.Impl.ChatServiceImpl;
+import com.huachen.service.Impl.UserServiceImpl;
 import com.huachen.util.WordUtil;
 
 @WebServlet("/Export")
@@ -33,14 +36,17 @@ public class Export extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String fileName = "消息记录.doc";
+		User user = (User) request.getSession().getAttribute("user");
+ 		String fileName = "消息记录.doc";
 
 		ChatRoom chatRoom = (ChatRoom) request.getSession().getAttribute("chatRoom");
 
+		UserService userservice = new UserServiceImpl();
 		ChatService chatservice = new ChatServiceImpl();
 		List<ChatContent> contents = new ArrayList<>();
+		Integer contentSign = userservice.getLastContent(user.getId());
 
-		contents = chatservice.getAllContents(chatRoom.getId());
+		contents = chatservice.getAllContents(chatRoom.getId(),contentSign);
 		Map<String, Object> mapvalue = new HashMap<String, Object>();
 
 		List<String> record = new ArrayList<>();

@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.huachen.model.User;
 
@@ -23,7 +24,12 @@ public class Private implements Filter{
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException{
 		HttpServletRequest httpservletrequest = (HttpServletRequest) request;
+		HttpServletResponse httpservletresponse = (HttpServletResponse) response;
 		User user = (User) httpservletrequest.getSession().getAttribute("user");
+		if(user == null) {
+			httpservletresponse.sendRedirect("Index.jsp");
+			return ;
+		}
 		if(user.getId() == null) {
 			request.setAttribute("msg", "请登录后再进行该操作!");
 			httpservletrequest.getRequestDispatcher("Index.jsp").forward(request, response);

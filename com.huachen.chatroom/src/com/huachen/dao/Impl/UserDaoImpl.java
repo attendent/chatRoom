@@ -179,6 +179,7 @@ public class UserDaoImpl implements UserDao {
 				user.setPassword(rs.getString(3));
 				user.setNickName(rs.getString(4));
 				user.setMail(rs.getString(5));
+				user.setContentSign(rs.getInt(6));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -567,6 +568,45 @@ public class UserDaoImpl implements UserDao {
 			util.close(ps, con, rs);
 		}
 		return false;
+	}
+
+	@Override
+	public Integer getLastContent(Integer userId) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String sql = "SELECT MAX(id) FROM chatcontent";
+		JdbcUtils util = new JdbcUtils();
+		try {
+			con = JdbcUtils.getCon();
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			util.close(ps, con, rs);
+		}
+		return 0;
+	}
+
+	@Override
+	public void getContentSign(Integer userId,Integer contentSign) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			con = JdbcUtils.getCon();
+			String sql = "UPDATE user SET content = '"+ contentSign +"' WHERE id = '"+ userId +"'";
+			ps = (PreparedStatement) con.prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			util.close(ps, con, rs);
+		}
 	}
 
 }

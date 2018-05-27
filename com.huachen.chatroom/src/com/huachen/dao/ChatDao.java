@@ -21,10 +21,10 @@ public interface ChatDao {
 	public List<ChatRoom> getAllChatRooms();
 
 	// 得到某聊天室七天内的聊天记录
-	public List<ChatContent> getSevenContents(Integer roomId);
+	public List<ChatContent> getSevenContents(Integer roomId,Integer contentSign);
 	
 	// 得到某聊天室全部的聊天记录
-	public List<ChatContent> getAllContents(Integer roomId);
+	public List<ChatContent> getAllContents(Integer roomId,Integer contentSign);
 
 	// 添加消息记录
 	public boolean addContent(ChatContent chatContent);

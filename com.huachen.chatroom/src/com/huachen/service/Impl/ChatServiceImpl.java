@@ -33,8 +33,8 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public List<ChatContent> getSevenContents(Integer roomId) {
-		return chatdao.getSevenContents(roomId);
+	public List<ChatContent> getSevenContents(Integer roomId,Integer contentSign) {
+		return chatdao.getSevenContents(roomId,contentSign);
 	}
 
 	@Override
@@ -71,8 +71,8 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	public List<ChatContent> getAllContents(Integer roomId) {
-		return chatdao.getAllContents(roomId);
+	public List<ChatContent> getAllContents(Integer roomId,Integer contentSign) {
+		return chatdao.getAllContents(roomId,contentSign);
 	}
 
 	@Override

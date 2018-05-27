@@ -18,10 +18,10 @@ public interface ChatService {
 	public List<ChatRoom> getAllChatRooms();
 
 	// 得到某房间七天内消息记录
-	public List<ChatContent> getSevenContents(Integer roomId);
+	public List<ChatContent> getSevenContents(Integer roomId,Integer contentSign);
 	
 	// 得到某房间的全部消息纪录
-	public List<ChatContent> getAllContents(Integer roomId);
+	public List<ChatContent> getAllContents(Integer roomId,Integer contentSign);
 
 	// 将某条消息记录加入数据库
 	public boolean addContent(ChatContent chatContent);

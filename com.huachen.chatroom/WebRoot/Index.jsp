@@ -195,9 +195,10 @@
 						<button onclick="send()" onclick="clear()">发送 消息</button>
 					</c:if></th>
 				<c:if test="${!empty(user.id) }">
-					<th><a href="GetChatList?roomId=${chatRoom.id }"><button>消息
+					<th><a href="GetContents?roomId=${chatRoom.id }"><button>消息
 								记录</button></a></th>
 					<th><a href="Export"><button>导出记录</button></a></th>
+					<th><a href="ClearContents"><button>清空记录</button></a></th>
 					<th>
 						<form action="Upload?action=myfile" method="post"
 							enctype="multipart/form-data">
@@ -213,8 +214,10 @@
 							<input type="file" name="filename" /> <input
 								name="mypicture" type="submit" value="发送图片">
 						</form>
+					</th>	
+					<th>
+						<a href="QuitUser"><button>退出登录</button></a>
 					</th>
-					<th><a href="QuitUser"><button>退出登录</button></a></th>
 					<th>
 						<button type="button" onclick="change2()">修改昵称</button>
 					</th>

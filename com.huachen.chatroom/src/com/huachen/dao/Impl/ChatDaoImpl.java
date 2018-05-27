@@ -88,22 +88,21 @@ public class ChatDaoImpl implements ChatDao {
 	}
 
 	@Override
-	public List<ChatContent> getSevenContents(Integer roomId) {
+	public List<ChatContent> getSevenContents(Integer roomId, Integer contentSign) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String sql = "select * from chatcontent where roomid=? order by date asc";
+		String sql = "select * from chatcontent where roomid='" + roomId + "' AND id > '" + contentSign
+				+ "' order by date asc";
 		List<ChatContent> chatContents = new ArrayList<>();
 		try {
 			con = JdbcUtils.getCon();
 			ps = con.prepareStatement(sql);
-			ps.setInt(1, roomId);
 			rs = ps.executeQuery();
 			ChatContent chatContent;
 			while (rs.next()) {
 				chatContent = new ChatContent(rs.getInt("id"), rs.getString("content"), rs.getInt("roomid"),
-						rs.getString("roomName"),rs.getString("username"),
-						rs.getTimestamp("date"));
+						rs.getString("roomName"), rs.getString("username"), rs.getTimestamp("date"));
 				Timestamp now = new Timestamp(System.currentTimeMillis());
 				long t = now.getTime() - chatContent.getDate().getTime();
 				if (t / 1000 <= (long) 3600 * 24 * 7) {
@@ -207,7 +206,6 @@ public class ChatDaoImpl implements ChatDao {
 		return chatRoom;
 	}
 
-
 	@Override
 	public boolean addFile(String nickName, Integer roomId, String file) {
 		Connection con = null;
@@ -271,11 +269,11 @@ public class ChatDaoImpl implements ChatDao {
 	}
 
 	@Override
-	public List<ChatContent> getAllContents(Integer roomId) {
+	public List<ChatContent> getAllContents(Integer roomId, Integer contentSign) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String sql = "select * from chatcontent where roomid=? order by date asc";
+		String sql = "SELECT * FROM chatcontent WHERE roomid = '"+ roomId +"' AND id > '"+ contentSign +"' order by date asc";
 		List<ChatContent> chatContents = new ArrayList<>();
 		try {
 			con = JdbcUtils.getCon();
@@ -285,8 +283,7 @@ public class ChatDaoImpl implements ChatDao {
 			ChatContent chatContent;
 			while (rs.next()) {
 				chatContent = new ChatContent(rs.getInt("id"), rs.getString("content"), rs.getInt("roomid"),
-						rs.getString("roomName"), rs.getString("username"),
-						rs.getTimestamp("date"));
+						rs.getString("roomName"), rs.getString("username"), rs.getTimestamp("date"));
 				chatContents.add(chatContent);
 			}
 		} catch (SQLException e) {

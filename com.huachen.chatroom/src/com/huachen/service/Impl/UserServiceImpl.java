@@ -235,4 +235,15 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	@Override
+	public Integer getLastContent(Integer userId) {
+		return userdao.getLastContent(userId);
+	}
+
+	@Override
+	public void addContentSign(Integer userId,Integer contentSign) {
+		userdao.getContentSign(userId,contentSign);
+		
+	}
+
 }

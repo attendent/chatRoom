@@ -17,6 +17,7 @@ public class User implements Serializable, HttpSessionBindingListener {
 	private String mail;
 	private String image;
 	private String reMark;
+	private Integer contentSign;
 
 	public Integer getId() {
 		return id;
@@ -73,6 +74,14 @@ public class User implements Serializable, HttpSessionBindingListener {
 	public void setReMark(String reMark) {
 		this.reMark = reMark;
 	}
+	
+	public Integer getContentSign() {
+		return contentSign;
+	}
+
+	public void setContentSign(Integer contentSign) {
+		this.contentSign = contentSign;
+	}
 	@Override
 	public void valueBound(HttpSessionBindingEvent event) {
 		// 将新建立Session 和 用户 保存ServletContext 的Map中
@@ -97,9 +106,5 @@ public class User implements Serializable, HttpSessionBindingListener {
 
 		// 从map移除
 		map.remove(this);
-	}
-
-	
-
-	
+	}	
 }

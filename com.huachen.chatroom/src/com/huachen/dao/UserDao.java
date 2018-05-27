@@ -70,5 +70,9 @@ public interface UserDao {
 
 	// 判断是否已申请该用户为好友
 	public boolean isApplicant(Integer userId,Integer applicantId);
+
+	public Integer getLastContent(Integer userId);
+
+	public void getContentSign(Integer userId,Integer contentSign);
 	
 }
