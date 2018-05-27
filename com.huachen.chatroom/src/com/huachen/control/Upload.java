@@ -97,9 +97,8 @@ public class Upload extends HttpServlet {
 					// 保存的真实文件路径
 					fileRealPath = savePath + fileName;
 					if (action.equals("mypicture")) {
-						if (formatName.equals(".jpg") || formatName.equals(".png") || formatName.equals(".bmp")
-								|| formatName.equals(".gif")) {
-						}else {
+						if (!formatName.equals(".jpg") && !formatName.equals(".png") && !formatName.equals(".bmp")
+								&& !formatName.equals(".gif")) {
 							request.setAttribute("msg", "请传入图片，否则选择上传文件");
 							request.getRequestDispatcher("Index.jsp").forward(request, response);
 							return;

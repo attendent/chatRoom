@@ -193,7 +193,9 @@ public class UserDaoImpl implements UserDao {
 	public List<User> getFriends(Integer userId) {
 		Connection con = null;
 		PreparedStatement ps = null;
+		PreparedStatement ps2 = null;
 		ResultSet rs = null;
+		ResultSet rs2 = null;
 		List<User> list = new ArrayList<>();
 		try {
 			con = JdbcUtils.getCon();
@@ -206,6 +208,15 @@ public class UserDaoImpl implements UserDao {
 				user.setId(rs.getInt(1));
 				user.setUserName(rs.getString(2));
 				user.setNickName(rs.getString(4));
+				sql = "SELECT * FROM user_friend uf WHERE userid = '" + userId + "' AND friendid = '"
+						+ rs.getInt(1) +"'";
+				ps2 = con.prepareStatement(sql);
+				rs2 = ps2.executeQuery();
+				while(rs2.next()) {
+					user.setReMark(rs2.getString(4));
+				}
+				ps2.close();
+				rs2.close();
 				list.add(user);
 			}
 		} catch (Exception e) {
@@ -341,11 +352,12 @@ public class UserDaoImpl implements UserDao {
 			ps.executeUpdate();
 			ps.close();
 
-			sql = "INSERT INTO user_friend (userid,friendid,remark) VALUES(?,?,?)";
+			sql = "INSERT INTO user_friend (userid,friendid,status,remark) VALUES(?,?,?,?)";
 			ps = (PreparedStatement) con.prepareStatement(sql);
 			ps.setInt(1, userId);
 			ps.setInt(2, friendId);
-			ps.setString(3, remark);
+			ps.setInt(3, 1);
+			ps.setString(4, remark);
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -548,7 +560,7 @@ public class UserDaoImpl implements UserDao {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				return true;
-			} 
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

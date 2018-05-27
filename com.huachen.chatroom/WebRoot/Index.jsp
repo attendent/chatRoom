@@ -53,30 +53,55 @@
 			<h3>我的好友</h3>
 			<p>
 				<c:forEach items="${friends }" var="friend">
-  					${friend.nickName }
+					<c:if test="${!empty(friend.reMark) }">
+						${friend.reMark }
+					</c:if>
+					<c:if test="${empty(friend.reMark) }">
+						${friend.nickName }
+					</c:if>	
+					
+					<table>
+					<tr>
+					<th>
 					<form action="DelFriend" method=post>
 						<input type="text" style="display: none" name="friendId"
 							value="${friend.id }">
 						<button type="submit" value="删除好友">删除好友</button>
 					</form>
-
-					<form action="Remark" id="remark" method=post style="display: none">
-						<input type="hidden" name="friendId" value="${friend.id }">
-						<label>修改备注:</label><input type="text" name="remark" value="楼下小黑">
-						<button type="submit" value="确定">确定</button>
-					</form>
-
+					</th>
+					
+					<th>
 					<form action="Whisper" method=post>
 						<input type="hidden" name="friendId" value="${friend.id }">
 						<input type="hidden" name="friendName" value="${friend.nickName }">
 						<button type="submit">私聊好友</button>
 					</form>
-
+					</th>
+					
+					<th>
 					<form action="Invite" method=post>
 						<input type="hidden" name="friendId" value="${friend.id }">
 						<input type="hidden" name="roomId" value="${chatRoom.id }">
 						<button type="submit">邀请好友</button>
 					</form>
+					</th>
+					
+					<th>
+					<button onclick="changeRemark('${friend.id }')">修改备注</button>
+					</th>
+					</tr>
+					
+					<tr>
+					<th>
+					<form action="Remark" id="${friend.id }" method=post style="display: none">
+						<input type="hidden" name="friendId" value="${friend.id }">
+						<input type="text" name="remark" value="楼下小黑">
+						<button type="submit" value="确定">确定</button>
+					</form>
+					</th>
+					</tr>
+					</table>
+					
 				</c:forEach>
 			</p>
 		</div>

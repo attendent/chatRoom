@@ -53,16 +53,16 @@ function change() {
 			+ new Date().getTime();
 }
 
-function change1() {
-	if (document.getElementById("remark").style.display = "") {
-		document.getElementById("remark").style.display = "none";
+function changeRemark(id) {
+	if (document.getElementById(id).style.display == "") {
+		document.getElementById(id).style.display = "none";
 	} else {
-		document.getElementById("remark").style.display = "";
+		document.getElementById(id).style.display = "";
 	}
 }
 
 function change2() {
-	if (document.getElementById("changeNickName").style.display = "") {
+	if (document.getElementById("changeNickName").style.display == "") {
 		document.getElementById("changeNickName").style.display = "none";
 	} else {
 		document.getElementById("changeNickName").style.display = "";
