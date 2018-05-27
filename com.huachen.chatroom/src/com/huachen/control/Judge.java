@@ -1,14 +1,14 @@
 package com.huachen.control;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.huachen.model.User;
 import com.huachen.service.UserService;
@@ -35,8 +35,6 @@ public class Judge extends HttpServlet {
 		User user = (User) request.getSession().getAttribute("user");
 		String applicantId = request.getParameter("applicantId");
 		String msg = null;
-		@SuppressWarnings("unchecked")
-		Map<User, HttpSession> map = (Map<User, HttpSession>) getServletContext().getAttribute("map");
 
 		UserService userservice = new UserServiceImpl();
 		if(action == null) {
@@ -45,19 +43,24 @@ public class Judge extends HttpServlet {
 		}
 		if (action.equals("Yes")) {
 			msg = userservice.agreedFriend(user.getId(), Integer.parseInt(applicantId));
+			
+			// 更新好友列表
+			List<User> friends = new ArrayList<>();
+			friends = userservice.getFriends(user.getId());
+			
+			request.setAttribute("friends", friends);
+			
 		} else if (action.equals("No")) {
 			msg = userservice.refuseFriend(user.getId(), Integer.parseInt(applicantId));
 		}
-
-		for (User hasLoginUser : map.keySet()) {
-			if (hasLoginUser.getId().equals(Integer.parseInt(applicantId))) {
-				// 此用户之前登陆过 --- 消灭Session
-				HttpSession hasLoginSession = map.get(hasLoginUser);
-				hasLoginSession.setAttribute("msg", "您添加" + user.getNickName() + msg);
-				break;
-			}
-		}
-		response.sendRedirect("Index.jsp");
+		
+		// 更新申请列表
+		List<User> applicants = new ArrayList<>();
+		applicants = userservice.getApplicants(user.getId());
+		request.setAttribute("applicants", applicants);
+		
+		request.setAttribute("msg", msg);
+		request.getRequestDispatcher("Index.jsp").forward(request, response);
 	}
 
 }

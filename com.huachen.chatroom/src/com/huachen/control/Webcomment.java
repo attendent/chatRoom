@@ -10,6 +10,8 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import com.huachen.model.ChatContent;
 import com.huachen.service.ChatService;
 import com.huachen.service.Impl.ChatServiceImpl;
@@ -26,7 +28,7 @@ public class Webcomment {
 
 	@OnOpen
 	public void onOpen(@PathParam("nickName") String nickName, @PathParam("roomId") String roomId,
-			@PathParam("roomName") String roomName, Session session,EndpointConfig config) {
+			@PathParam("roomName") String roomName, Session session) {
 		
 		this.session = session;
 		webSocketSet.add(this); // 加入set中
@@ -47,7 +49,7 @@ public class Webcomment {
 	}
 
 	@OnClose
-	public void onClose(@PathParam("nickName") String nickName) {
+	public void onClose(@PathParam("nickName") String nickName,Session session) {
 		webSocketSet.remove(this); // 从set中删除
 		subOnlineCount(); // 在线数减1
 		String message = String.format("[%s,%s]<br>", nickName + "退出了聊天室","当前在线人数为" + getOnlineCount());
@@ -66,9 +68,11 @@ public class Webcomment {
 	public void onMessage(String message, @PathParam("nickName") String nickName, @PathParam("roomId") String roomId,
 			@PathParam("roomName") String roomName, Session session) {
 
+		String myMessage = null;
+		myMessage = StringEscapeUtils.escapeHtml4(message);
 		ChatContent chatContent = new ChatContent();
-
-		chatContent.setContent(message);
+		
+		chatContent.setContent(myMessage);
 		chatContent.setUserName(nickName);
 		chatContent.setRoomId(Integer.parseInt(roomId));
 		chatContent.setRoomName(roomName);
@@ -80,7 +84,7 @@ public class Webcomment {
 		chatservice.addContent(chatContent);
 		
 		List<String> records = new ArrayList<>();
-		records.add(nickName + " 于 " + new Timestamp(System.currentTimeMillis()) + " 说： " + message + "<br>");
+		records.add(nickName + " 于 " + new Timestamp(System.currentTimeMillis()) + " 说： " + myMessage + "<br>");
 
 		for (Webcomment item : webSocketSet) {
 			try {
@@ -93,6 +97,10 @@ public class Webcomment {
 			}
 		}
 	}
+	
+	public void closeWebSocket(String nickName,Session session){
+		this.onClose(nickName,session);
+    }
 
 	@OnError
 	public void onError(Session session, Throwable error) {

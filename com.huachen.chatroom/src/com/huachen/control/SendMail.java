@@ -24,31 +24,7 @@ public class SendMail extends HttpServlet implements Servlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		String action = request.getParameter("action");
-		if(action == null) {
-			response.sendRedirect("Index.jsp");
-			return ;
-		}
-
-		if (action.equals("ReSet")) {
-			String token = request.getParameter("token");
-
-			long currTimeMillis = System.currentTimeMillis();
-			long prevTimeMillis = Long.parseLong(token.split(" ")[0]);
-			if (currTimeMillis - prevTimeMillis > validtime) {
-				request.setAttribute("msg", "检验码已过期，请重新发送邮件");
-				request.getRequestDispatcher("FindPassword.jsp").forward(request, response);
-				return;
-			}
-
-			request.setAttribute("token", token);
-			request.getRequestDispatcher("/ReSet.jsp").forward(request, response);
-			return;
-		}
-
 		response.sendRedirect("Index.jsp");
-		return;
 	}
 
 	@Override
@@ -60,6 +36,8 @@ public class SendMail extends HttpServlet implements Servlet {
 		if (action.equals("sendmail")) {
 			String userName = request.getParameter("userName");
 			String userMail = null;
+			
+			// 判断用户名是否正确
 			if (userName.equals("") || userName.length() > 16) {
 				request.setAttribute("msg", "用户名长度请符合规范");
 				request.getRequestDispatcher("FindPassword.jsp").forward(request, response);
@@ -74,23 +52,23 @@ public class SendMail extends HttpServlet implements Servlet {
 				return;
 			}
 			userMail = user.getMail();
-			int code = (int) (Math.random() * 10000);
+			int code = (int) (Math.random() * 10000);		
 
-			String token = System.currentTimeMillis() + " " + userName;
-
-			String genurl = "localhost:8080/com.huachen.chatroom/SendMail?action=ReSet&token=" + token;
 			String mailContent = "<div>" + "<div>亲爱的聊天室用户</div>" + "<div>您已经在本聊天室申请了找回密码，请点击下面链接，重新设置您的密码：</div>"
-					+ "<div><a href=\"" + genurl + "\">" + genurl + "</a></div>" + "<div>您的检验码为 '" + code + "'</div>"
+					+ "<div><a href=\"" + "\">" + "</a></div>" + "<div>您的检验码为 '" + code + "'</div>"
 					+ "<div>此信是由聊天室系统发出，系统不接受回信，请勿直接回复。</div>" + "<div>致礼！</div>" + "</div>";
 			MailUtils.sendEmail("1213018820@qq.com", "ppabylzakledhjbi", new String[] { userMail }, "请重置您的聊天室账号的密码",
 					mailContent, null, "text/html", "UTF8");
 			request.setAttribute("msg", "短信已发送，请注意查收");
 			request.getSession().setAttribute("code", code);
-			request.getRequestDispatcher("FindPassword.jsp").forward(request, response);
+			request.setAttribute("time", System.currentTimeMillis());
+			request.setAttribute("userName", userName);
+			request.getRequestDispatcher("ReSet.jsp").forward(request, response);
 			return;
 		} else if (action.equals("ReSetPwd")) {
 			String nextPassword = request.getParameter("nextpassword");
-			String token = request.getParameter("token");
+			String time = request.getParameter("time");
+			String userName = request.getParameter("userName");
 			Integer code = (Integer) request.getSession().getAttribute("code");
 			String input_code = request.getParameter("input_code");
 
@@ -107,14 +85,14 @@ public class SendMail extends HttpServlet implements Servlet {
 			}
 			if (code.equals(Integer.parseInt(input_code))) {
 				long currTimeMillis = System.currentTimeMillis();
-				long prevTimeMillis = Long.parseLong(token.split(" ")[0]);
+				long prevTimeMillis = Long.parseLong(time);
 				if (currTimeMillis - prevTimeMillis > validtime) {
+					request.setAttribute("msg", "检验码已过期，请重新发送邮件");
 					request.getRequestDispatcher("FindPassword").forward(request, response);
 					return;
 				}
 
 				UserService userservice = new UserServiceImpl();
-				String userName = token.split(" ")[1];
 				if (!nextPassword.equals("")) {
 					if (nextPassword.length() <= 16) {
 						nextPassword = DigertUtils.md5(nextPassword);

@@ -43,17 +43,22 @@ public class Upload extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String action = request.getParameter("action");
 		User user = (User) request.getSession().getAttribute("user");
 		ChatRoom chatRoom = (ChatRoom) request.getSession().getAttribute("chatRoom");
-		String myfile = request.getParameter("myfile");
-		System.out.println("name"+myfile);
+
+		if (action == null) {
+			response.sendRedirect("Index.jsp");
+			return;
+		}
+
 		request.setCharacterEncoding("UTF-8");
 		Date date = new Date();
 		SimpleDateFormat sdfFileName = new SimpleDateFormat("yyyyMMdd");
 		String newfileName = sdfFileName.format(date);
 		// 真实文件路径
 		String fileRealPath = "";
-		
+
 		// 保存路径
 		String savePath = this.getServletConfig().getServletContext().getRealPath("/") + "uploads\\" + newfileName
 				+ "\\";
@@ -83,21 +88,23 @@ public class Upload extends HttpServlet {
 				// 获取文件名
 				String fileName = item.getName();
 				if (fileName != null) {
-					if(fileName == "") {
+					if (fileName == "") {
 						request.setAttribute("msg", "上传文件不能为空");
 						request.getRequestDispatcher("Index.jsp").forward(request, response);
-						return ;
+						return;
 					}
-					// 获取文件名
 					String formatName = fileName.substring(fileName.lastIndexOf("."));
 					// 保存的真实文件路径
 					fileRealPath = savePath + fileName;
-					/*if(fileName == null) {
-						response.setCharacterEncoding("Index.jsp");
-						return ;
-					}*/
-					System.out.println("fileName"+fileName);
-					System.out.println("formatName" + formatName);
+					if (action.equals("mypicture")) {
+						if (formatName.equals(".jpg") || formatName.equals(".png") || formatName.equals(".bmp")
+								|| formatName.equals(".gif")) {
+						}else {
+							request.setAttribute("msg", "请传入图片，否则选择上传文件");
+							request.getRequestDispatcher("Index.jsp").forward(request, response);
+							return;
+						}
+					}
 
 					BufferedInputStream in = new BufferedInputStream(item.getInputStream());// 读取文件流
 					BufferedOutputStream outStream = new BufferedOutputStream(
@@ -106,11 +113,15 @@ public class Upload extends HttpServlet {
 					// 写入文件
 					if (new File(fileRealPath).exists()) {
 						// 用户发送文件的信息
-						String str = "<a href='uploads/" + newfileName + "/" + fileName + "'>" + fileName
-								+ "</a>";
+						String str = null;
+						if (action.equals("mypicture")) {
+							str = "<br><img src='uploads/" + newfileName + "/" + fileName + "'" + "heitht=\"501\" width=\"334\">";
+						} else {
+							str = "<a href='uploads/" + newfileName + "/" + fileName + "'>" + fileName + "</a>";
+						}
 
 						ChatService chatservice = new ChatServiceImpl();
-						
+
 						// 将信息写入数据库
 						ChatContent chatContent = new ChatContent();
 						chatContent.setContent(str);
@@ -119,20 +130,22 @@ public class Upload extends HttpServlet {
 						chatContent.setRoomName(chatRoom.getRoomName());
 						chatContent.setDate(new Timestamp(System.currentTimeMillis()));
 						chatservice.addContent(chatContent);
-						String chatRecord = user.getNickName() + "于" + chatContent.getDate()
-								+ "发送了文件:" + str + "\n";
-						
-						 chatservice.addFile(user.getNickName(), chatRoom.getId(), str);
-						
-						List<com.huachen.model.File> f = new ArrayList<>();
-						f = chatservice.getAllFiles(chatRoom.getId());
-						request.getSession().setAttribute("files", f);
+
+						String chatRecord = user.getNickName() + "于" + chatContent.getDate() + "发送了文件:" + str + "\n";
+
+						if (action.equals("myfile")) {
+							chatservice.addFile(user.getNickName(), chatRoom.getId(), str);
+
+							List<com.huachen.model.File> f = new ArrayList<>();
+							f = chatservice.getAllFiles(chatRoom.getId());
+							request.getSession().setAttribute("files", f);
+							request.setAttribute("msg", "上传文件成功");
+						}
 						request.getSession().setAttribute("contents", chatRecord);
 					}
 				}
 			}
 		}
-		request.setAttribute("msg", "上传文件成功");
 		request.getRequestDispatcher("Index.jsp").forward(request, response);
 	}
 }

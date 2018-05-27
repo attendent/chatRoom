@@ -268,7 +268,7 @@ public class UserDaoImpl implements UserDao {
 		try {
 			con = JdbcUtils.getCon();
 			String sql = "DELETE FROM user_friend WHERE (userid = '" + userId + "' AND friendId = '" + friendId
-					+ "') OR (userid = '"+ friendId +"' AND userid = '"+ friendId +"')";
+					+ "') OR (userid = '" + friendId + "' AND userid = '" + friendId + "')";
 			ps = (PreparedStatement) con.prepareStatement(sql);
 			ps.executeUpdate();
 			return true;
@@ -520,10 +520,11 @@ public class UserDaoImpl implements UserDao {
 		ResultSet rs = null;
 		try {
 			con = JdbcUtils.getCon();
-			String sql = "DELECE FROM user_friend uf WHERE userid = '" + userId + "' AND applicantId = '" + applicantId
-					+ "'";
+			String sql = "DELETE FROM user_friend WHERE userid = '" + applicantId + "' AND friendid = '" + userId
+					+ "' AND status = 0";
 			ps = (PreparedStatement) con.prepareStatement(sql);
 			ps.executeUpdate();
+			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
@@ -547,9 +548,7 @@ public class UserDaoImpl implements UserDao {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				return true;
-			} else {
-				return false;
-			}
+			} 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

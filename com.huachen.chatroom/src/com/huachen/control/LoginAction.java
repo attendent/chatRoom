@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import com.huachen.model.User;
 import com.huachen.service.UserService;
@@ -40,16 +41,11 @@ public class LoginAction extends HttpServlet {
 		String code = (String) request.getSession().getAttribute("code");
 		String msg = null;
 
-		User user = new User();
-		user.setUserName(userName);
-		user.setPassword(password);
-		request.getSession().setAttribute("user", user);
-
 		Verification ver = new VerificationImpl();
 		UserService userservice = new UserServiceImpl();
 
 		msg = ver.isCode(inputCode, code);
-		if (msg.equals("验证码正确")) {
+		//if (msg.equals("验证码正确")) {
 			msg = ver.isLength(userName, password);
 			if (msg.equals("操作成功")) {
 				// 加密
@@ -57,6 +53,10 @@ public class LoginAction extends HttpServlet {
 				msg = userservice.login(userName, password);
 				if (msg.equals("操作成功")) {
 					// 登录成功
+					User user = new User();
+					user.setUserName(userName);
+					user.setPassword(password);
+					request.getSession().setAttribute("user", user);
 					// 由用户名找到该用户的基本信息并存储在user中
 					user = userservice.find(userName);
 					// 销毁之前状态
@@ -80,7 +80,7 @@ public class LoginAction extends HttpServlet {
 					return;
 				}
 			}
-		}
+		//}
 		request.setAttribute("msg", msg);
 		request.getRequestDispatcher("Login.jsp").forward(request, response);
 	}

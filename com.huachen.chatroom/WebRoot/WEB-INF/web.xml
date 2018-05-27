@@ -29,6 +29,7 @@
     <filter-name>IndexFilter</filter-name>
     <url-pattern>/Index.jsp</url-pattern>
   </filter-mapping>
+  
   <filter>
     <filter-name>Private</filter-name>
     <filter-class>com.huachen.filter.Private</filter-class>
@@ -40,6 +41,7 @@
     <url-pattern>/GetChatList</url-pattern>
     <url-pattern>/QuitUser</url-pattern>
     <url-pattern>/ChangeNickName</url-pattern>
+    <url-pattern>/Judge</url-pattern>
   </filter-mapping>
   <filter>
     <filter-name>EncodingFilter</filter-name>

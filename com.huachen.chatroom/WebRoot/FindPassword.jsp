@@ -24,7 +24,6 @@
 						<label>用&nbsp;户&nbsp;名(0-6)：</label> <input type="text"
 							name="userName" size="20" value="${user.userName }" />
 					</div>
-					<input type="hidden" name="token" value="${token }" />
 						<button type="submit">
 							&nbsp;&lt;发送邮件&gt;
 						</button>

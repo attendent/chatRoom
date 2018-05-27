@@ -86,13 +86,13 @@ public class UserServiceImpl implements UserService {
 		if (!userId.equals(friendId)) {
 			if (friendId != null) {
 				if (userdao.isFriend(userId, friendId) == false) {
-					if(userdao.isApplicant(userId,friendId) == false) {
+					if (userdao.isApplicant(userId, friendId) == false) {
 						if (userdao.addFriend(userId, friendId) == true) {
 							return "申请好友成功";
 						} else {
 							return "申请好友失败";
 						}
-					}else {
+					} else {
 						return "正在申请好友";
 					}
 				} else {
@@ -219,22 +219,20 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String agreedFriend(Integer userId, Integer applicantId) {
-		if(userdao.agreedFriend(userId,applicantId)==true) {
+		if (userdao.agreedFriend(userId, applicantId) == true) {
 			return "成功";
-		}else {
+		} else {
 			return "发生系统错误";
 		}
 	}
 
 	@Override
 	public String refuseFriend(Integer userId, Integer applicantId) {
-		if(userdao.refuseFriend(userId, applicantId)==true) {
+		if (userdao.refuseFriend(userId, applicantId) == true) {
 			return "被拒绝";
-		}else {
+		} else {
 			return "发生系统错误";
 		}
 	}
-	
-	
 
 }

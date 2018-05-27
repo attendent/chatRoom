@@ -31,7 +31,8 @@ alert("${msg }");
 					<label>检&nbsp;验&nbsp;码</label><input type="text"
 						name="input_code" size="20"/>
 					</div>
-					<input type="hidden" name="token" value="${token }" />
+					<input type="hidden" name="userName" value="${userName }" />
+					<input type="hidden" name="time" value="${time }"/>
 					<div id="login">
 						<button type="submit">&nbsp;&lt;确定&gt;</button>
 					</div>
