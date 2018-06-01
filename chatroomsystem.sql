@@ -9,3 +9,5 @@ INSERT INTO `user_room` VALUES (NULL, 69);
 INSERT INTO `user_room` VALUES (10, 1);
 INSERT INTO `user_room` VALUES (5, 70);
 INSERT INTO `user_room` VALUES (6, 70);
+INSERT INTO `user_room` VALUES (11, 1);
+INSERT INTO `user_room` VALUES (5, 72);

@@ -31,7 +31,7 @@
     <url-pattern>/AddRoom</url-pattern>
     <url-pattern>/ChangeNickName</url-pattern>
     <url-pattern>/Export</url-pattern>
-    <url-pattern>/GetChatList</url-pattern>
+    <url-pattern>/GetContents</url-pattern>
     <url-pattern>/QuitUser</url-pattern>
     <url-pattern>/ChangeNickName</url-pattern>
     <url-pattern>/Judge</url-pattern>

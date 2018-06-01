@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.huachen.model.ChatContent;
 import com.huachen.model.Page;
+import com.huachen.model.User;
 import com.huachen.service.ChatService;
 import com.huachen.service.Impl.ChatServiceImpl;
 
@@ -30,12 +31,13 @@ public class GetChatList extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String roomId = request.getParameter("roomId");
+		User user = (User) request.getSession().getAttribute("user");
 		Integer i = 0;
 
 		ChatService chatservice = new ChatServiceImpl();
 		List<ChatContent> contents = new ArrayList<>();
 
-		contents = chatservice.getSevenContents(Integer.parseInt(roomId));
+		contents = chatservice.getSevenContents(Integer.parseInt(roomId),user.getContentSign());
 
 		List<Page> pages = new ArrayList<>();
 		List<String> record = new ArrayList<>();		

@@ -278,7 +278,6 @@ public class ChatDaoImpl implements ChatDao {
 		try {
 			con = JdbcUtils.getCon();
 			ps = con.prepareStatement(sql);
-			ps.setInt(1, roomId);
 			rs = ps.executeQuery();
 			ChatContent chatContent;
 			while (rs.next()) {

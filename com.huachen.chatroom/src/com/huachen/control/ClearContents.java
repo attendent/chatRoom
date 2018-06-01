@@ -25,7 +25,6 @@ public class ClearContents extends HttpServlet {
 		Integer contentSign;
 		UserService userservice = new UserServiceImpl();
 		contentSign = userservice.getLastContent(user.getId());
-		System.out.println(contentSign);
 
 		user.setContentSign(contentSign);
 		request.getSession().setAttribute("user", user);

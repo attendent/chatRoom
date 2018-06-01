@@ -58,50 +58,52 @@
 					</c:if>
 					<c:if test="${empty(friend.reMark) }">
 						${friend.nickName }
-					</c:if>	
-					
+					</c:if>
+
 					<table>
-					<tr>
-					<th>
-					<form action="DelFriend" method=post>
-						<input type="text" style="display: none" name="friendId"
-							value="${friend.id }">
-						<button type="submit" value="删除好友">删除好友</button>
-					</form>
-					</th>
-					
-					<th>
-					<form action="Whisper" method=post>
-						<input type="hidden" name="friendId" value="${friend.id }">
-						<input type="hidden" name="friendName" value="${friend.nickName }">
-						<button type="submit">私聊好友</button>
-					</form>
-					</th>
-					
-					<th>
-					<form action="Invite" method=post>
-						<input type="hidden" name="friendId" value="${friend.id }">
-						<input type="hidden" name="roomId" value="${chatRoom.id }">
-						<button type="submit">邀请好友</button>
-					</form>
-					</th>
-					
-					<th>
-					<button onclick="changeRemark('${friend.id }')">修改备注</button>
-					</th>
-					</tr>
-					
-					<tr>
-					<th>
-					<form action="Remark" id="${friend.id }" method=post style="display: none">
-						<input type="hidden" name="friendId" value="${friend.id }">
-						<input type="text" name="remark" value="楼下小黑">
-						<button type="submit" value="确定">确定</button>
-					</form>
-					</th>
-					</tr>
+						<tr>
+							<th>
+								<form action="DelFriend" method=post>
+									<input type="text" style="display: none" name="friendId"
+										value="${friend.id }">
+									<button type="submit" value="删除好友">删除好友</button>
+								</form>
+							</th>
+
+							<th>
+								<form action="Whisper" method=post>
+									<input type="hidden" name="friendId" value="${friend.id }">
+									<input type="hidden" name="friendName"
+										value="${friend.nickName }">
+									<button type="submit">私聊好友</button>
+								</form>
+							</th>
+
+							<th>
+								<form action="Invite" method=post>
+									<input type="hidden" name="friendId" value="${friend.id }">
+									<input type="hidden" name="roomId" value="${chatRoom.id }">
+									<button type="submit">邀请好友</button>
+								</form>
+							</th>
+
+							<th>
+								<button onclick="changeRemark('${friend.id }')">修改备注</button>
+							</th>
+						</tr>
+
+						<tr>
+							<th>
+								<form action="Remark" id="${friend.id }" method=post
+									style="display: none">
+									<input type="hidden" name="friendId" value="${friend.id }">
+									<input type="text" name="remark" value="楼下小黑">
+									<button type="submit" value="确定">确定</button>
+								</form>
+							</th>
+						</tr>
 					</table>
-					
+
 				</c:forEach>
 			</p>
 		</div>
@@ -192,7 +194,7 @@
 		<table>
 			<tr>
 				<th><c:if test="${!empty(user) }">
-						<button onclick="send()" onclick="clear()">发送 消息</button>
+						<button onclick="send()">发送 消息</button>
 					</c:if></th>
 				<c:if test="${!empty(user.id) }">
 					<th><a href="GetContents?roomId=${chatRoom.id }"><button>消息
@@ -211,13 +213,11 @@
 					<th>
 						<form action="Upload?action=mypicture"
 							enctype="multipart/form-data" method="post">
-							<input type="file" name="filename" /> <input
-								name="mypicture" type="submit" value="发送图片">
+							<input type="file" name="filename" /> <input name="mypicture"
+								type="submit" value="发送图片">
 						</form>
-					</th>	
-					<th>
-						<a href="QuitUser"><button>退出登录</button></a>
 					</th>
+					<th><a href="QuitUser"><button>退出登录</button></a></th>
 					<th>
 						<button type="button" onclick="change2()">修改昵称</button>
 					</th>
@@ -282,34 +282,33 @@
 <script>
 	var websocket = null;
 	// 判断当前浏览器是否支持WebSocket
+	wsUrl = 'ws://localhost:8080/com.huachen.chatroom/newwebsocket/'
+		+ "${user.nickName }" + '//' + "${chatRoom.id}" + '//'
+		+ "${chatRoom.roomName }";
+		
 	if ('WebSocket' in window) {
-		//alert('当前浏览器支持 websocket');
-		websocket = new WebSocket(
-				'ws://192.168.1.143:8080/com.huachen.chatroom/newwebsocket/'
-						+ "${user.nickName }" + '//' + "${chatRoom.id}" + '//'
-						+ "${chatRoom.roomName}");
+		websocket = new WebSocket(wsUrl);
 	} else {
 		alert('当前浏览器 Not support websocket')
 	}
 	// 连接发生错误的回调方法
 	websocket.onerror = function() {
 		setMessageInnerHTML("WebSocket连接发生错误");
-		reconnect();
+		reconnect(wsUrl);
 	};
 	// 连接成功建立的回调方法
 	websocket.onopen = function() {
-		//setMessageInnerHTML("WebSocket连接成功");
-		heartCheck.start();
+		heartCheck.reset().start();
 	}
 	// 接收到消息的回调方法
 	websocket.onmessage = function(event) {
 		setMessageInnerHTML(event.data);
-		heartCheck.reset();
+		heartCheck.reset().start();
 	}
 	// 连接关闭的回调方法
 	websocket.onclose = function() {
 		setMessageInnerHTML("WebSocket连接关闭");
-		reconnect();
+		reconnect(wsUrl);
 	}
 	// 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
 	window.onbeforeunload = function() {
@@ -317,7 +316,7 @@
 	}
 	// 将消息显示在网页上
 	function setMessageInnerHTML(innerHTML) {
-		document.getElementById('message').innerHTML += innerHTML;
+		document.getElementById("message").innerHTML += innerHTML;
 	}
 	// 关闭WebSocket连接
 	function closeWebSocket() {
@@ -326,29 +325,34 @@
 	// 发送消息
 	function send() {
 		var message = document.getElementById('text').value;
-		if(document.getElementById('text').value.length <2000){
+		if (document.getElementById('text').value.length < 2000) {
 			websocket.send(message);
-		}else{
+		} else {
 			alert("输入请不要超过2000，若有需要请选择发送文件");
-		}		
+		}
 	}
-	
+
 	window.onunload = function() {
 		websocket.close();
-    }
+	}
 
 	//使文本输出框光标在最后一行
 	var t = document.getElementById("message");
 	setInterval(function() {
 		t.scrollTop = t.scrollHeight;
 	}, 1000);
-	
-	
-/* 	setInterval("refreshTime()",1000);
-	function refreshTime() {
-		var dateObj = new Date(); 
-		time.innerHTML = ""; //刷新div里面的内容 
-	}  */
 
+	var heartCheck = {
+		    timeout: 60000,
+		    timeoutObj: null,
+		    reset: function(){
+		        clearTimeout(this.timeoutObj);
+		        this.start();
+		    },
+		    start: function(){
+		        this.timeoutObj = setTimeout(function(){
+		        }, this.timeout)
+		    }
+		}
 </script>
 </html>

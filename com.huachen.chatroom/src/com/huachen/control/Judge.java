@@ -57,8 +57,7 @@ public class Judge extends HttpServlet {
 		// 更新申请列表
 		List<User> applicants = new ArrayList<>();
 		applicants = userservice.getApplicants(user.getId());
-		request.setAttribute("applicants", applicants);
-		
+		request.getSession().setAttribute("applicants", applicants);
 		request.setAttribute("msg", msg);
 		request.getRequestDispatcher("Index.jsp").forward(request, response);
 	}

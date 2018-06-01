@@ -1,8 +1,6 @@
 package com.huachen.control;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,13 +42,7 @@ public class AddFriend extends HttpServlet {
 		if (msg.equals("操作成功")) {
 			// 由好友名得到好友的基本信息
 			friend = userservice.find(friendName);
-			List<User> friends = new ArrayList<>();
 			msg = userservice.addFriend(user.getId(), friend.getId());
-			if (msg.equals("申请好友成功")) {
-				// 更新主页好友列表
-				friends = userservice.getFriends(user.getId());
-				request.getSession().setAttribute("friends", friends);
-			}
 		}
 		request.setAttribute("msg", msg);
 		request.getRequestDispatcher("Index.jsp").forward(request, response);

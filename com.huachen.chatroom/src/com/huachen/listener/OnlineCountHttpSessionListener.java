@@ -9,7 +9,6 @@ public class OnlineCountHttpSessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
-		System.out.println("==================在线人数+1===========================");
 		HttpSession session = se.getSession();
 		se.getSession().setMaxInactiveInterval(30 * 60);//30分钟
 		ServletContext context = session.getServletContext();
@@ -20,7 +19,6 @@ public class OnlineCountHttpSessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionDestroyed(HttpSessionEvent se) {
-		System.out.println("==================在线人数-1===========================");
 		HttpSession session = se.getSession();
 		ServletContext context = session.getServletContext();
 
